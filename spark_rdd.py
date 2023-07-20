@@ -9,6 +9,7 @@ spark = (
     .getOrCreate()
 )
 
+
 WORDS_LIST = "Spark makes life a lot easier and puts me into good Spirits, Spark is to Awesome!".split(' ')
 
 words_rdd = (
@@ -16,7 +17,7 @@ words_rdd = (
     .sparkContext
     .parallelize(WORDS_LIST)
 )
-
+'''
 WORDS_DATA = words_rdd.collect()
 
 for word in WORDS_DATA:
@@ -38,3 +39,23 @@ def word_start_withs(word, letter):
 
 op = words_rdd.filter(lambda word: word_start_withs(word, "S")).collect()
 print(op)
+
+words_trd_rdd = words_rdd.map(lambda word: (word, word[0], word_start_withs(word, "S")))
+
+for element in words_trd_rdd.collect():
+    print(element)
+
+words_rdd.flatMap(lambda word: list(word)).take(10)
+print(words_rdd)
+'''
+
+# RDD Actions
+def word_length_reducer(leftWord, rightWord):
+    if len(leftWord) > len(rightWord):
+        return leftWord
+    else:
+        return rightWord
+
+print(words_rdd.reduce(word_length_reducer))
+
+print(spark.sparkContext.parallelize(range(1, 21)).max())
